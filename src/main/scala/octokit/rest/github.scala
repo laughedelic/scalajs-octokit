@@ -142,4 +142,8 @@ object Github {
     LinkString |
     LinkMeta |
     String
+
+  // This adds generated routes as methods to the Github class
+  implicit def githubGeneratedRoutes(github: Github): GithubGeneratedRoutes =
+    new GithubGeneratedRoutes(github.asInstanceOf[js.Dynamic])
 }

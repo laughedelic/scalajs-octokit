@@ -37,3 +37,20 @@ bintrayReleaseOnPublish := !isSnapshot.value
 bintrayPackageLabels := Seq("scalajs", "github", "octokit", "facades")
 
 ghreleaseAssets := Seq()
+
+Compile/sourceGenerators += Def.task {
+  import laughedelic.sbt.octokit._, Generator._
+  import upickle.default._
+  import java.nio.file.Files
+  import scala.collection.JavaConverters._
+
+  val out = (Compile/sourceManaged).value / "octokit" / "rest" / "routes.scala"
+  val parsed = read[Routes](file("routes-for-api-docs.json"))
+
+  IO.createDirectory(out.getParentFile)
+  Files.write(
+    out.toPath,
+    generateRoutes(parsed).asJava
+  )
+  Seq(out)
+}.taskValue

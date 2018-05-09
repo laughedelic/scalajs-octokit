@@ -70,7 +70,7 @@ object Generator {
   }
 
   // TODO: see https://github.com/octokit/rest.js/pull/732
-  private val returnType = "js.Any"
+  private val returnType = "Github.AnyResponse"
 
   def methodSignature(method: Method, route: Route): Lines = {
     Seq(
