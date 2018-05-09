@@ -14,6 +14,28 @@ case class Route(
   // method: String,
   // path: String,
 ) {
+
+  def scaladoc: String = {
+    Seq(
+      Seq(title, ""),
+      if (description.isEmpty) Seq() else {
+        description.split('\n').toSeq :+ ""
+      },
+      for {
+        param <- params
+          if param.description.nonEmpty
+        // default = param.default
+        //   .map { value => s" (default: `${value}`)"}
+        //   .getOrElse("")
+      } yield
+        s"@param ${param.name} ${param.description}",
+      Seq("", s"@see ${documentationUrl}")
+    ).flatten.mkString(
+        "/** ",
+      "\n  * ",
+      "\n  */"
+    )
+  }
 }
 
 object Param { implicit def rw: RW[Param] = macroRW }
@@ -25,6 +47,7 @@ case class Param(
   // location: String,
   // default: Option[String] = None,
 ) {
+  def default: String = if (required) "" else " = js.native"
 }
 
 
