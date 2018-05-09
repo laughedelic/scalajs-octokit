@@ -43,10 +43,14 @@ Compile/sourceGenerators += Def.task {
   import upickle.default._
   import java.nio.file.Files
   import scala.collection.JavaConverters._
+  val log = streams.value.log
+
+  val routesJson = baseDirectory.value / "routes-for-api-docs.json"
+  log.info(s"Parsing Github routes from  ${routesJson} ...")
+  val parsed = read[Routes](routesJson)
 
   val out = (Compile/sourceManaged).value / "octokit" / "rest" / "routes.scala"
-  val parsed = read[Routes](file("routes-for-api-docs.json"))
-
+  log.info(s"Writing generated routes to ${out} ...")
   IO.createDirectory(out.getParentFile)
   Files.write(
     out.toPath,

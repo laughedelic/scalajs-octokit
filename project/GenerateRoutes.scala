@@ -60,7 +60,7 @@ object Generator {
           if param.description.nonEmpty
       } yield
         s"@param ${param.name} ${param.description}",
-      Seq("", s"@see ${route.documentationUrl}"),
+      Seq("", s"@see [[${route.documentationUrl}]]"),
     ).flatten
     Seq(
       Seq(s"/** ${route.title}"),
