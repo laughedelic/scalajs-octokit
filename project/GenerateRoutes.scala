@@ -10,9 +10,6 @@ case class Route(
   description: String = "",
   documentationUrl: String,
   params: List[Param] = Nil,
-  // enabledForApps: Boolean,
-  // method: String,
-  // path: String,
 ) {
 
   def scaladoc: String = {
@@ -24,9 +21,6 @@ case class Route(
       for {
         param <- params
           if param.description.nonEmpty
-        // default = param.default
-        //   .map { value => s" (default: `${value}`)"}
-        //   .getOrElse("")
       } yield
         s"@param ${param.name} ${param.description}",
       Seq("", s"@see ${documentationUrl}")
@@ -65,8 +59,6 @@ case class Param(
   name: String,
   description: String = "",
   required: Boolean = false,
-  // location: String,
-  // default: Option[String] = None,
 ) {
   def scalaType: String = Param.jsToScala(tpe)
 }
