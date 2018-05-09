@@ -36,6 +36,16 @@ case class Route(
       "\n  */"
     )
   }
+
+  def toMethod(name: String): String = {
+    params.map { param =>
+      s"${param.name}: ${param.tpe}${param.default}"
+    }.mkString(
+      s"def ${name}(\n  ",
+      ",\n  ",
+      "\n): Future[js.Any]"
+    )
+  }
 }
 
 object Param { implicit def rw: RW[Param] = macroRW }
@@ -57,5 +67,7 @@ object Generator {
     val parsed = read[Map[String, Map[String, Route]]](new File("routes-for-api-docs.json"))
     val route = parsed("gists")("create")
     println(route)
+    println(route.scaladoc)
+    println(route.toMethod("create"))
   }
 }
