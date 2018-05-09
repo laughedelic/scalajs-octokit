@@ -38,17 +38,28 @@ case class Route(
   }
 
   def toMethod(name: String): String = {
-    params.map { param =>
-      s"${param.name}: ${param.tpe}${param.default}"
-    }.mkString(
-      s"def ${name}(\n  ",
-      ",\n  ",
-      "\n): Future[js.Any]"
-    )
+    Seq(
+      Seq(s"def ${name}("),
+      params.map { param =>
+        val default: String =
+          if (param.required) "" else " = js.native"
+        s"  ${param.name}: ${param.scalaType}${default},"
+      },
+      Seq("): Future[js.Any]"),
+    ).flatten.mkString("\n")
   }
 }
 
-object Param { implicit def rw: RW[Param] = macroRW }
+object Param {
+  implicit def rw: RW[Param] = macroRW
+
+  def jsToScala(tpe: String): String = tpe match {
+    case "integer" | "string" | "boolean" => tpe.capitalize
+    case "object" | "any" => s"js.${tpe.capitalize}"
+    case _ if tpe.endsWith("[]") =>
+      jsToScala(tpe.stripSuffix("[]")).mkString("js.Array[", "", "]")
+  }
+}
 case class Param(
   @upickle.key("type") tpe: String,
   name: String,
@@ -57,7 +68,7 @@ case class Param(
   // location: String,
   // default: Option[String] = None,
 ) {
-  def default: String = if (required) "" else " = js.native"
+  def scalaType: String = Param.jsToScala(tpe)
 }
 
 
@@ -65,8 +76,15 @@ object Generator {
 
   def main(args: Array[String]): Unit = {
     val parsed = read[Map[String, Map[String, Route]]](new File("routes-for-api-docs.json"))
-    val route = parsed("gists")("create")
-    println(route)
+
+    val types = for {
+        group: Map[String, Route] <- parsed.values.toSet
+        route: Route <- group.values.toSet
+        param: Param <- route.params.toSet
+      } yield param.tpe
+    println(types)
+
+    val route = parsed("issues")("create")
     println(route.scaladoc)
     println(route.toMethod("create"))
   }
