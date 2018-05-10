@@ -18,8 +18,9 @@ object Param {
   implicit def rw: RW[Param] = macroRW
 
   def jsToScala(tpe: String): String = tpe match {
-    case "integer" | "string" | "boolean" => tpe.capitalize
+    case "string" | "boolean" => tpe.capitalize
     case "object" | "any" => s"js.${tpe.capitalize}"
+    case "integer" | "number" => "Int"
     case _ if tpe.endsWith("[]") =>
       jsToScala(tpe.stripSuffix("[]")).mkString("js.Array[", "", "]")
   }
