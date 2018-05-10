@@ -30,10 +30,12 @@ case class Param(
   name: String,
   description: String = "",
   required: Boolean = false,
+  allowNull: Boolean = false,
 ) {
   def scalaType: String = {
     val t = Param.jsToScala(tpe)
-    if (required) t else s"js.UndefOr[${t}]"
+    val tOrNull = if(allowNull) s"${t} | Null" else t
+    if (required) tOrNull else s"js.UndefOr[${tOrNull}]"
   }
 }
 
@@ -96,7 +98,9 @@ object Generator {
         "  js.Dynamic.literal(",
       ),
       route.params.map { param =>
-        s"""    "${param.name}" -> `${param.name}`,"""
+        val coerceNull: String =
+          if (param.allowNull) ".asInstanceOf[js.Any]" else ""
+        s"""    "${param.name}" -> `${param.name}`${coerceNull},"""
       },
       Seq(
         "  )",
@@ -118,9 +122,9 @@ object Generator {
   def template(content: Lines): Lines = Seq(
     Seq(
       "package laughedelic.octokit.rest", "",
-      "import scala.scalajs.js",
+      "import scala.scalajs.js, js.|",
       "import scala.concurrent.Future", "",
-      "class GithubGeneratedRoutes(val githubDynamic: js.Dynamic) {", "",
+      "class GithubGeneratedRoutes(private val githubDynamic: js.Dynamic) {", "",
     ),
     content.indent(),
     Seq("", "}"),
