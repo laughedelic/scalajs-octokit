@@ -8,38 +8,28 @@ class Github(
 ) extends js.Object {
 
   def authenticate(auth: Github.Auth): Unit = js.native
+
   def hasNextPage(link: Github.Link): js.UndefOr[String] = js.native
   def hasPreviousPage(link: Github.Link): js.UndefOr[String] = js.native
+
   def hasLastPage(link: Github.Link): js.UndefOr[String] = js.native
   def hasFirstPage(link: Github.Link): js.UndefOr[String] = js.native
 
   def getNextPage(
-    link: Github.Link
-  ): js.Promise[Github.AnyResponse] = js.native
-  def getNextPage(
     link: Github.Link,
     headers: js.Dictionary[js.Any] = js.native
   ): js.Promise[Github.AnyResponse] = js.native
 
-  def getPreviousPage(
-    link: Github.Link
-  ): js.Promise[Github.AnyResponse] = js.native
   def getPreviousPage(
     link: Github.Link,
     headers: js.Dictionary[js.Any] = js.native
   ): js.Promise[Github.AnyResponse] = js.native
 
   def getLastPage(
-    link: Github.Link
-  ): js.Promise[Github.AnyResponse] = js.native
-  def getLastPage(
     link: Github.Link,
     headers: js.Dictionary[js.Any] = js.native
   ): js.Promise[Github.AnyResponse] = js.native
 
-  def getFirstPage(
-    link: Github.Link
-  ): js.Promise[Github.AnyResponse] = js.native
   def getFirstPage(
     link: Github.Link,
     headers: js.Dictionary[js.Any] = js.native
@@ -53,7 +43,7 @@ object Github {
 
   @js.native
   trait AnyResponse extends js.Object {
-    /** This is the data you would see in https://developer.github.com/v3/ */
+    /** This is the data you would see in [[https://developer.github.com/v3/]] */
     val data: Json = js.native
 
     /** Request metadata */
