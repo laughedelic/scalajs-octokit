@@ -28,7 +28,7 @@ object Generator {
   }
 
   // TODO: see https://github.com/octokit/rest.js/pull/732
-  private val returnType = "Github.AnyResponse"
+  private val returnType = "Octokit.AnyResponse"
 
   def methodSignature(methodName: MethodName, methodType: MethodType): Lines = {
     Seq(
@@ -48,7 +48,7 @@ object Generator {
   ): Lines = {
     Seq(
       Seq(
-        s"githubDynamic.${namespace}.${methodName}(",
+        s"octokitJS.${namespace}.${methodName}(",
         "  js.Dynamic.literal(",
       ),
       methodType.paramTypes.map { case (paramName, param) =>
@@ -80,7 +80,7 @@ object Generator {
       "package laughedelic.octokit.rest", "",
       "import scala.scalajs.js, js.|",
       "import scala.concurrent.Future", "",
-      "class GithubGeneratedRoutes(private val githubDynamic: js.Dynamic) {", "",
+      "class OctokitGeneratedRoutes(private val octokitJS: js.Dynamic) {",
     ),
     content.indent(),
     Seq("", "}"),

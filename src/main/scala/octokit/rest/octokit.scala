@@ -3,40 +3,40 @@ package laughedelic.octokit.rest
 import scala.scalajs.js, js.|, js.annotation._
 
 @js.native @JSImport("@octokit/rest", JSImport.Default)
-class Github(
-  options: js.UndefOr[Github.Options] = js.undefined
+class Octokit(
+  options: js.UndefOr[Octokit.Options] = js.undefined
 ) extends js.Object {
 
-  def authenticate(auth: Github.Auth): Unit = js.native
+  def authenticate(auth: Octokit.Auth): Unit = js.native
 
-  def hasNextPage(link: Github.Link): js.UndefOr[String] = js.native
-  def hasPreviousPage(link: Github.Link): js.UndefOr[String] = js.native
+  def hasNextPage(link: Octokit.Link): js.UndefOr[String] = js.native
+  def hasPreviousPage(link: Octokit.Link): js.UndefOr[String] = js.native
 
-  def hasLastPage(link: Github.Link): js.UndefOr[String] = js.native
-  def hasFirstPage(link: Github.Link): js.UndefOr[String] = js.native
+  def hasLastPage(link: Octokit.Link): js.UndefOr[String] = js.native
+  def hasFirstPage(link: Octokit.Link): js.UndefOr[String] = js.native
 
   def getNextPage(
-    link: Github.Link,
+    link: Octokit.Link,
     headers: js.Dictionary[js.Any] = js.native
-  ): js.Promise[Github.AnyResponse] = js.native
+  ): js.Promise[Octokit.AnyResponse] = js.native
 
   def getPreviousPage(
-    link: Github.Link,
+    link: Octokit.Link,
     headers: js.Dictionary[js.Any] = js.native
-  ): js.Promise[Github.AnyResponse] = js.native
+  ): js.Promise[Octokit.AnyResponse] = js.native
 
   def getLastPage(
-    link: Github.Link,
+    link: Octokit.Link,
     headers: js.Dictionary[js.Any] = js.native
-  ): js.Promise[Github.AnyResponse] = js.native
+  ): js.Promise[Octokit.AnyResponse] = js.native
 
   def getFirstPage(
-    link: Github.Link,
+    link: Octokit.Link,
     headers: js.Dictionary[js.Any] = js.native
-  ): js.Promise[Github.AnyResponse] = js.native
+  ): js.Promise[Octokit.AnyResponse] = js.native
 }
 
-object Github {
+object Octokit {
 
   type Json = js.Any
   type Date = String
@@ -133,7 +133,7 @@ object Github {
     LinkMeta |
     String
 
-  // This adds generated routes as methods to the Github class
-  implicit def githubGeneratedRoutes(github: Github): GithubGeneratedRoutes =
-    new GithubGeneratedRoutes(github.asInstanceOf[js.Dynamic])
+  // This adds generated routes as methods to the Octokit class
+  implicit def octokitGeneratedRoutes(octokit: Octokit): OctokitGeneratedRoutes =
+    new OctokitGeneratedRoutes(octokit.asInstanceOf[js.Dynamic])
 }
