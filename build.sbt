@@ -45,9 +45,9 @@ Compile/sourceGenerators += Def.task {
   import scala.collection.JavaConverters._
   val log = streams.value.log
 
-  val routesJson = baseDirectory.value / "routes-for-api-docs.json"
+  val routesJson = baseDirectory.value / "routes.json"
   log.info(s"Parsing Github routes from  ${routesJson} ...")
-  val parsed = read[Routes](routesJson)
+  val parsed = ParseRoutesTypes(routesJson)
 
   val out = (Compile/sourceManaged).value / "octokit" / "rest" / "routes.scala"
   log.info(s"Writing generated routes to ${out} ...")
