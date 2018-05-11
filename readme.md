@@ -29,6 +29,15 @@ This project contains Scala.js facades for [octokit/rest.js], the official GitHu
     ```
     (see the latest release version on the badge above)
 
+
+## Related projects
+
+* [scalajs-io/github-api-node](https://github.com/scalajs-io/github-api-node): partial facade for the [Github.js](http://github-tools.github.io/github) library
+    > Github.js provides a minimal higher-level wrapper around Github's API
+
+* [47deg/github4s](http://47deg.github.io/github4s): JVM/JS-compatible Scala wrapper for (a part of) the GitHub API
+    > Github4s is based on a Free Monad Architecture, which helps decoupling of program declaration from program interpretation
+
 [Scala.js]: https://www.scala-js.org
 [octokit/rest.js]: https://github.com/octokit/rest.js
 [scalajs-bundler]: https://github.com/scalacenter/scalajs-bundler
