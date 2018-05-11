@@ -58,3 +58,9 @@ Compile/sourceGenerators += Def.task {
   )
   Seq(out)
 }.taskValue
+
+libraryDependencies += "com.lihaoyi" %%% "utest" % "0.6.3" % Test
+testFrameworks += new TestFramework("utest.runner.Framework")
+
+enablePlugins(ScalaJSBundlerPlugin)
+npmDependencies in Test += "@octokit/rest" -> "15.4.0"
