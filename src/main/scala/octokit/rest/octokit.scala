@@ -38,7 +38,7 @@ class Octokit(
 
 object Octokit {
 
-  type Json = js.Any
+  type Json = js.Dynamic
   type Date = String
 
   @js.native
