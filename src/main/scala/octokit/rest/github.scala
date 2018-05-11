@@ -1,8 +1,8 @@
 package laughedelic.octokit.rest
 
-import scala.scalajs.js, js.|
+import scala.scalajs.js, js.|, js.annotation._
 
-@js.native @js.annotation.JSGlobal
+@js.native @JSImport("@octokit/rest", JSImport.Default)
 class Github(
   options: js.UndefOr[Github.Options] = js.undefined
 ) extends js.Object {
