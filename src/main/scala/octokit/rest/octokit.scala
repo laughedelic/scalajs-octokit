@@ -9,35 +9,36 @@ class Octokit(
 
   def authenticate(auth: Octokit.Auth): Unit = js.native
 
-  def hasNextPage(link: Octokit.Link): js.UndefOr[String] = js.native
-  def hasPreviousPage(link: Octokit.Link): js.UndefOr[String] = js.native
+  def hasNextPage(link: Octokit.Link | String): js.UndefOr[String] = js.native
+  def hasPreviousPage(link: Octokit.Link | String): js.UndefOr[String] = js.native
 
-  def hasLastPage(link: Octokit.Link): js.UndefOr[String] = js.native
-  def hasFirstPage(link: Octokit.Link): js.UndefOr[String] = js.native
+  def hasLastPage(link: Octokit.Link | String): js.UndefOr[String] = js.native
+  def hasFirstPage(link: Octokit.Link | String): js.UndefOr[String] = js.native
 
   def getNextPage(
-    link: Octokit.Link,
-    headers: js.Dictionary[js.Any] = js.native
+    link: Octokit.Link | String,
+    headers: Octokit.Headers = js.native,
   ): js.Promise[Octokit.AnyResponse] = js.native
 
   def getPreviousPage(
-    link: Octokit.Link,
-    headers: js.Dictionary[js.Any] = js.native
+    link: Octokit.Link | String,
+    headers: Octokit.Headers = js.native,
   ): js.Promise[Octokit.AnyResponse] = js.native
 
   def getLastPage(
-    link: Octokit.Link,
-    headers: js.Dictionary[js.Any] = js.native
+    link: Octokit.Link | String,
+    headers: Octokit.Headers = js.native,
   ): js.Promise[Octokit.AnyResponse] = js.native
 
   def getFirstPage(
-    link: Octokit.Link,
-    headers: js.Dictionary[js.Any] = js.native
+    link: Octokit.Link | String,
+    headers: Octokit.Headers = js.native,
   ): js.Promise[Octokit.AnyResponse] = js.native
 }
 
 object Octokit {
 
+  type Headers = js.Dictionary[js.Any]
   type Json = js.Dynamic
   type Date = String
 
@@ -63,75 +64,49 @@ object Octokit {
     val status: String = js.native
   }
 
-  @js.native
-  trait EmptyParams extends js.Object {}
+  class Options(
+    val baseUrl: js.UndefOr[String] = js.undefined,
+    val timeout: js.UndefOr[Int] = js.undefined,
+    val headers: js.UndefOr[Headers] = js.undefined,
+    // NOTE: should be `http.Agent`
+    val agent: js.UndefOr[js.Any] = js.undefined,
+  ) extends js.Object
 
-  @js.native
-  trait Options extends js.Object {
-    val baseUrl: js.UndefOr[String] = js.native
-    val timeout: js.UndefOr[Int] = js.native
-    // val headers?: OptionsHeaders
-    // val agent?: http.Agent
-  }
+  sealed abstract class Auth(
+    val `type`: String
+  ) extends js.Object
 
-  // @js.native
-  // trait OptionsHeaders extends js.Object {
-  //   [header: String]: Json
-  // }
+  class AuthBasic(
+    val username: js.UndefOr[String] = js.undefined,
+    val password: js.UndefOr[String] = js.undefined,
+  ) extends Auth("basic")
 
-  @js.native
-  trait AuthBasic extends js.Object {
-    // val type: "basic" = js.native
-    val username: String = js.native
-    val password: String = js.native
-  }
+  class AuthOAuthToken(
+    val token: js.UndefOr[String] = js.undefined,
+  ) extends Auth("oauth")
 
-  @js.native
-  trait AuthOAuthToken extends js.Object {
-    // val type: "oauth" = js.native
-    val token: String = js.native
-  }
+  class AuthOAuthSecret(
+    val key: js.UndefOr[String] = js.undefined,
+    val secret: js.UndefOr[String] = js.undefined,
+  ) extends Auth("oauth")
 
-  @js.native
-  trait AuthOAuthSecret extends js.Object {
-    // val type: "oauth" = js.native
-    val key: String = js.native
-    val secret: String = js.native
-  }
+  class AuthUserToken(
+    val token: js.UndefOr[String] = js.undefined,
+  ) extends Auth("token")
 
-  @js.native
-  trait AuthUserToken extends js.Object {
-    // val type: "token" = js.native
-    val token: String = js.native
-  }
+  class AuthJWT(
+    val token: js.UndefOr[String] = js.undefined,
+  ) extends Auth("integration")
 
-  @js.native
-  trait AuthJWT extends js.Object {
-    // val type: "integration" = js.native
-    val token: String = js.native
-  }
+  sealed trait Link extends js.Object
 
-  type Auth =
-    AuthBasic |
-    AuthOAuthToken |
-    AuthOAuthSecret |
-    AuthUserToken |
-    AuthJWT
+  sealed class LinkString(
+    val link: js.UndefOr[String] = js.undefined,
+  ) extends Link
 
-  @js.native
-  sealed trait LinkString extends js.Object {
-    val link: String = js.native
-  }
-
-  @js.native
-  sealed trait LinkMeta extends js.Object {
-    val meta: LinkString = js.native
-  }
-
-  type Link =
-    LinkString |
-    LinkMeta |
-    String
+  sealed class LinkMeta(
+    val meta: js.UndefOr[LinkString] = js.undefined,
+  ) extends Link
 
   // This adds generated routes as methods to the Octokit class
   implicit def octokitGeneratedRoutes(octokit: Octokit): OctokitGeneratedRoutes =
