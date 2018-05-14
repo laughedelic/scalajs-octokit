@@ -37,7 +37,10 @@ object Generator {
         val default: String = if (param.required) "" else " = js.undefined"
         s"  ${paramName}: ${param.scalaType}${default},"
       },
-      Seq(s"): Future[${returnType}] = "),
+      Seq(
+        s"  headers: js.UndefOr[js.Dictionary[Any]] = js.undefined,",
+        s"): Future[${returnType}] = ",
+      ),
     ).flatten
   }
 
@@ -59,7 +62,8 @@ object Generator {
         s"""    "${paramName}" -> ${paramValue},"""
       },
       Seq(
-        "  )",
+        s"""    "headers" -> headers""",
+         "  )",
         s").asInstanceOf[js.Promise[${returnType}]].toFuture",
       )
     ).flatten
