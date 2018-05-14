@@ -38,6 +38,20 @@ bintrayPackageLabels := Seq("scalajs", "github", "octokit", "facades")
 
 ghreleaseAssets := Seq()
 
+val octokitV = "15.4.1"
+lazy val downloadRoutesJson = settingKey[File]("Download routes.json file from the octokit/rest.js repository")
+
+downloadRoutesJson := {
+  import sys.process._
+  val log = sLog.value
+  val url = s"https://raw.githubusercontent.com/octokit/rest.js/v${octokitV}/lib/routes.json"
+  val file = baseDirectory.value / "routes.json"
+  log.info(s"Downloading routes.json v${octokitV} ...")
+  val exitCode = (new java.net.URL(url) #> file).!(log)
+  if (exitCode != 0) sys.error("Download failed")
+  file
+}
+
 Compile/sourceGenerators += Def.task {
   import laughedelic.sbt.octokit._, Generator._
   import upickle.default._
@@ -45,7 +59,7 @@ Compile/sourceGenerators += Def.task {
   import scala.collection.JavaConverters._
   val log = streams.value.log
 
-  val routesJson = baseDirectory.value / "routes.json"
+  val routesJson = downloadRoutesJson.value
   log.info(s"Parsing Github routes from  ${routesJson} ...")
   val parsed = ParseRoutesTypes(routesJson)
 
@@ -63,4 +77,4 @@ libraryDependencies += "com.lihaoyi" %%% "utest" % "0.6.3" % Test
 testFrameworks += new TestFramework("utest.runner.Framework")
 
 enablePlugins(ScalaJSBundlerPlugin)
-npmDependencies in Test += "@octokit/rest" -> "15.4.1"
+npmDependencies in Test += "@octokit/rest" -> octokitV
