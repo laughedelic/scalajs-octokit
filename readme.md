@@ -25,7 +25,7 @@ This project contains Scala.js facades for [octokit/rest.js], the official GitHu
 2. Add facades dependency to your `build.sbt`:
     ```scala
     resolvers += Resolver.jcenterRepo
-    libraryDependencies += "laughedelic" %%% "scalajs-probot" % "<version>"
+    libraryDependencies += "laughedelic" %%% "scalajs-octokit" % "<version>"
     ```
     (see the latest release version on the badge above)
 
