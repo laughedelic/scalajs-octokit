@@ -63,4 +63,4 @@ libraryDependencies += "com.lihaoyi" %%% "utest" % "0.6.3" % Test
 testFrameworks += new TestFramework("utest.runner.Framework")
 
 enablePlugins(ScalaJSBundlerPlugin)
-npmDependencies in Test += "@octokit/rest" -> "15.4.0"
+npmDependencies in Test += "@octokit/rest" -> "15.4.1"
