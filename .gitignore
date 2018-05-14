@@ -24,3 +24,6 @@ data/out/
 
 ignore.sbt
 /bin/
+
+routes.json
+routes-for-api-docs.json
