@@ -6,7 +6,7 @@ import java.io.File
 
 case class MethodType(
   params: Map[ParamName, Param] = Map(),
-  // headers: Map[String, String] = Map(),
+  headers: Map[String, String] = Map(),
 ) {
   def paramTypes: Map[ParamName, ParamType] = params.collect {
     // FIXME: handle sub-parameters instead of filtering them out
@@ -16,6 +16,12 @@ case class MethodType(
         case _ => name
       }
       escapedName -> paramType
+  }
+  def defaultHeaders: String = {
+    if (headers.isEmpty) "js.undefined"
+    else headers
+      .map { case (k, v) => s""""${k}" -> "${v}"""" }
+      .mkString("js.Dictionary(", ", ", "),")
   }
 }
 object MethodType { implicit def r: R[MethodType] = macroR }

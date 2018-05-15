@@ -38,7 +38,7 @@ object Generator {
         s"  ${paramName}: ${param.scalaType}${default},"
       },
       Seq(
-        s"  headers: js.UndefOr[Octokit.Headers] = js.undefined,",
+        s"  headers: js.UndefOr[Octokit.Headers] = ${methodType.defaultHeaders}",
         s"): Future[${returnType}] = ",
       ),
     ).flatten
