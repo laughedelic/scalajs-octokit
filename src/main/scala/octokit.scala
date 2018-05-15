@@ -9,47 +9,47 @@ class Octokit(
 
   def authenticate(auth: Octokit.Auth): Unit = js.native
 
-  def hasNextPage(link: Octokit.Link | String): js.UndefOr[String] = js.native
-  def hasPreviousPage(link: Octokit.Link | String): js.UndefOr[String] = js.native
+  def hasNextPage(link: Octokit.LinkLike): js.UndefOr[String] = js.native
+  def hasPreviousPage(link: Octokit.LinkLike): js.UndefOr[String] = js.native
 
-  def hasLastPage(link: Octokit.Link | String): js.UndefOr[String] = js.native
-  def hasFirstPage(link: Octokit.Link | String): js.UndefOr[String] = js.native
+  def hasLastPage(link: Octokit.LinkLike): js.UndefOr[String] = js.native
+  def hasFirstPage(link: Octokit.LinkLike): js.UndefOr[String] = js.native
 
   def getNextPage(
-    link: Octokit.Link | String,
+    link: Octokit.LinkLike,
     headers: Octokit.Headers = js.native,
   ): js.Promise[Octokit.AnyResponse] = js.native
 
   def getPreviousPage(
-    link: Octokit.Link | String,
+    link: Octokit.LinkLike,
     headers: Octokit.Headers = js.native,
   ): js.Promise[Octokit.AnyResponse] = js.native
 
   def getLastPage(
-    link: Octokit.Link | String,
+    link: Octokit.LinkLike,
     headers: Octokit.Headers = js.native,
   ): js.Promise[Octokit.AnyResponse] = js.native
 
   def getFirstPage(
-    link: Octokit.Link | String,
+    link: Octokit.LinkLike,
     headers: Octokit.Headers = js.native,
   ): js.Promise[Octokit.AnyResponse] = js.native
 }
 
 object Octokit {
 
-  type Headers = js.Dictionary[js.Any]
+  type Headers = js.Dictionary[String]
   type Json = js.Dynamic
-  type Date = String
 
   @js.native
-  trait AnyResponse extends js.Object {
+  trait Response[Data] extends js.Object {
     /** This is the data you would see in [[https://developer.github.com/v3/]] */
-    val data: Json = js.native
-
+    val data: Data = js.native
     /** Request metadata */
     val meta: ResponseMeta = js.native
   }
+
+  type AnyResponse = Response[Json]
 
   @js.native
   trait ResponseMeta extends js.Object {
@@ -68,7 +68,9 @@ object Octokit {
     val baseUrl: js.UndefOr[String] = js.undefined,
     val timeout: js.UndefOr[Int] = js.undefined,
     val headers: js.UndefOr[Headers] = js.undefined,
-    // NOTE: should be `http.Agent`
+    // NOTE: should be `http.Agent`, but I don't want to add a dependency on
+    // Node.js facades for this single type. Besides it's an input, so it's
+    // not so important to have a precise type here.
     val agent: js.UndefOr[js.Any] = js.undefined,
   ) extends js.Object
 
@@ -76,37 +78,26 @@ object Octokit {
     val `type`: String
   ) extends js.Object
 
-  class AuthBasic(
-    val username: js.UndefOr[String] = js.undefined,
-    val password: js.UndefOr[String] = js.undefined,
-  ) extends Auth("basic")
+  object Auth {
+    class Basic(
+      val username: String,
+      val password: String,
+    ) extends Auth("basic")
 
-  class AuthOAuthToken(
-    val token: js.UndefOr[String] = js.undefined,
-  ) extends Auth("oauth")
+    class OAuthSecret(
+      val key: String,
+      val secret: String,
+    ) extends Auth("oauth")
 
-  class AuthOAuthSecret(
-    val key: js.UndefOr[String] = js.undefined,
-    val secret: js.UndefOr[String] = js.undefined,
-  ) extends Auth("oauth")
+    class OAuthToken(val token: String) extends Auth("oauth")
+    class Token(val token: String) extends Auth("token")
+    class App(val token: String) extends Auth("app")
+  }
 
-  class AuthUserToken(
-    val token: js.UndefOr[String] = js.undefined,
-  ) extends Auth("token")
+  class Link(val link: String) extends js.Object
+  class MetaLink(val meta: Link) extends js.Object
 
-  class AuthJWT(
-    val token: js.UndefOr[String] = js.undefined,
-  ) extends Auth("integration")
-
-  sealed trait Link extends js.Object
-
-  sealed class LinkString(
-    val link: js.UndefOr[String] = js.undefined,
-  ) extends Link
-
-  sealed class LinkMeta(
-    val meta: js.UndefOr[LinkString] = js.undefined,
-  ) extends Link
+  type LinkLike = Link | MetaLink | String
 
   // This adds generated routes as methods to the Octokit class
   implicit def octokitGeneratedRoutes(octokit: Octokit): OctokitGeneratedRoutes =
