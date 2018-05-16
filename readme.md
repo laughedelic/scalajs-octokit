@@ -51,23 +51,29 @@ import laughedelic.octokit.rest._
 // Non-authenticated client with default parameters:
 val octokit = new Octokit()
 
-// A simple request (https://developer.github.com/v3/repos/#get)
+// A simple request (returns a Future)
 octokit.repos.get(
   owner = "octokit",
   repo = "rest.js"
-).map { response =>
-  // Check some data in the response:
-  println(response.data.full_name) // ==> "octokit/rest.js"
-  // Or print the whole thing:
+).foreach { response =>
+
+  // Check some data in the response
+  println(response.data.full_name)
+  println(response.data.stargazers_count)
+  println(response.data.license.name)
+
+  // Or print the whole payload (see https://developer.github.com/v3/repos/#get)
   println(js.JSON.stringify(response.data, space = 2))
 }
 ```
 
 ## Project structure
 
-Most of the code in this project is generated, so you won't find it in the repository. See that code you need to clone the project and run `sbt compile`.
+Most of the code in this project is generated, so you won't find it in the repository. To see that code you need to clone the project and run `sbt compile`.
 
-There is a bit of code which cannot be generated and is written manually: [`src/main/scala/octokit.scala`](src/main/scala/octokit.scala). It defines types for the `Octokit` client, its options, authentication and pagination.
+The code that parses `routes.json` and generates the Scala code is in `project/src/`, so it's available to the main build and is used in the `sourceGenerators`.
+
+There is also some manually written code: [`src/main/scala/octokit.scala`](src/main/scala/octokit.scala). It defines types for the `Octokit` client, its options, authentication and pagination.
 
 ## Documentation
 
