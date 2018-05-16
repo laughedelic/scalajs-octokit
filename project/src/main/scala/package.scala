@@ -1,5 +1,9 @@
 package laughedelic.sbt
 
+import upickle.default.Reader
+import ujson.Js
+import scala.util.Try
+
 package object octokit {
 
   type Namespace = String
@@ -28,5 +32,27 @@ package object octokit {
       jsTypeToScala(tpe.stripSuffix("[]"))
         .mkString("js.Array[", "", "]")
     case _ => tpe
+  }
+
+  def escapeScalaIdent(ident: String): String = ident match {
+    case "type" | "object" | "private" | "protected" => s"`${ident}`"
+    case _ => ident
+  }
+
+  def eitherOf[T, A <: T, B <: T](implicit
+    readerA: Reader[A],
+    readerB: Reader[B],
+  ): Reader[T] = {
+    import upickle.default._
+    reader[Js.Value].map[T] {
+      json => Try {
+        readJs[A](json)
+      }.recover {
+        case e: ujson.AbortJsonProcessingException =>
+          readJs[B](json)
+      }.getOrElse {
+        sys.error(s"Couldn't parse neither of the alternatives: ${json}")
+      }
+    }
   }
 }

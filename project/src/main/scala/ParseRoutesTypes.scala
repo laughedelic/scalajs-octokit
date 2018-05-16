@@ -11,11 +11,7 @@ case class MethodType(
   def paramTypes: Map[ParamName, ParamType] = params.collect {
     // FIXME: handle sub-parameters instead of filtering them out
     case (name, paramType: ParamType) if !name.contains('.') =>
-      val escapedName = name match {
-        case "type" | "object" | "private" | "protected" => s"`${name}`"
-        case _ => name
-      }
-      escapedName -> paramType
+      escapeScalaIdent(name) -> paramType
   }
   def defaultHeaders: String = {
     if (headers.isEmpty) "js.undefined"
@@ -29,20 +25,10 @@ object MethodType { implicit def r: R[MethodType] = macroR }
 
 trait Param
 object Param {
-  import ujson.Js
-  import scala.util.Try
-  // This ugly workaround means just `reader[ParamType] | reader[ParamAlias]`
-  implicit def r: R[Param] =
-    reader[Js.Value].map[Param] {
-      json => Try {
-        readJs[ParamType](json)
-      }.recover {
-        case e: ujson.AbortJsonProcessingException =>
-          readJs[ParamAlias](json)
-      }.getOrElse {
-        sys.error(s"Neither `type` nor `alias`: ${json}")
-      }
-    }
+  implicit def r: R[Param] = eitherOf(
+    reader[ParamType],
+    reader[ParamAlias],
+  )
 }
 
 case class ParamType(
@@ -56,9 +42,7 @@ case class ParamType(
     if (required) tOrNull else s"js.UndefOr[${tOrNull}]"
   }
 }
-object ParamType {
-  implicit def r: R[ParamType] = macroR
-}
+object ParamType { implicit def r: R[ParamType] = macroR }
 
 case class ParamAlias(
   alias: String,
@@ -69,7 +53,6 @@ object ParamAlias { implicit def r: R[ParamAlias] = macroR }
 
 
 object ParseRoutesTypes {
-
   def apply(file: File): RoutesTypes = read[RoutesTypes](file)
   def apply(): RoutesTypes = apply(new File("routes.json"))
 }
