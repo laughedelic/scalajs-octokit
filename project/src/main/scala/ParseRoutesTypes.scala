@@ -44,9 +44,10 @@ case class ParamType(
 }
 object ParamType { implicit def r: R[ParamType] = macroR }
 
+// Aliases are used for deprecated parameters, so we just ignore them
 case class ParamAlias(
   alias: String,
-  deprecated: String = "",
+  // deprecated: Either[String, Boolean] = "", // this doesn't work, but it doesn't matter if we skip it anyway
 ) extends Param
 object ParamAlias { implicit def r: R[ParamAlias] = macroR }
 

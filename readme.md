@@ -1,12 +1,11 @@
 # [Scala.js] facades for [octokit/rest.js]
 
+[<img align="right" src="https://img.shields.io/badge/octokit/rest.js-15.8.0-blue.svg">](https://www.npmjs.com/package/@octokit/rest/v/15.8.0)
+[<img align="right" src="https://www.scala-js.org/assets/badges/scalajs-0.6.17.svg">](https://www.scala-js.org)
 [![](https://travis-ci.com/laughedelic/scalajs-octokit.svg?branch=master)](https://travis-ci.com/laughedelic/scalajs-octokit)
 [![](http://img.shields.io/github/release/laughedelic/scalajs-octokit/all.svg)](https://github.com/laughedelic/scalajs-octokit/releases/latest)
 [![](https://img.shields.io/badge/license-MPL--2.0-blue.svg)](https://www.tldrlegal.com/l/mpl-2.0)
 [![](https://img.shields.io/badge/contact-gitter_chat-dd1054.svg)](https://gitter.im/laughedelic/scalajs-octokit)
-
-[![](https://www.scala-js.org/assets/badges/scalajs-0.6.17.svg)](https://www.scala-js.org)
-[![](https://img.shields.io/badge/octokit/rest.js-15.5.0-blue.svg)](https://www.tldrlegal.com/l/mpl-2.0)
 
 This project contains Scala.js facades for [octokit/rest.js], the official GitHub REST API v3 client for Node.js.
 
@@ -24,12 +23,12 @@ _This project is in active development, there are no published releases yet. Thi
 
     * If it's a Node.js project where you manage dependencies with npm, run
         ```shell
-        npm install @octokit/rest@15.5.0
+        npm install @octokit/rest@15.8.0
         ```
 
     * If it's a Scala.js project use [scalajs-bundler] and add to your `build.sbt`:
         ```scala
-        Compile/npmDependencies += "@octokit/rest" -> "15.5.0"
+        Compile/npmDependencies += "@octokit/rest" -> "15.8.0"
         ```
 
 2. Add facades dependency to your `build.sbt`:

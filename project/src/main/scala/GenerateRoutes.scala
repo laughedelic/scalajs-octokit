@@ -118,11 +118,14 @@ object Generator {
       }
       case List("types") => {
         val types = for {
-          nmspc: Map[String, MethodType] <- routesTypes.values.toSet
-          methd: MethodType <- nmspc.values.toSet
-          param: ParamType <- methd.paramTypes.values.toSet
-        } yield param.tpe
-        println(types)
+          (nmspcN, nmspc) <- routesTypes.toSeq
+          (methdN, methd) <- nmspc.toSeq
+          (paramN, param) <- methd.paramTypes.toSeq
+          if (param.tpe.startsWith("object"))
+        } yield {
+          s"${nmspcN}.${methdN}.${paramN}${param.tpe.stripPrefix("object")}"
+        }
+        types.sorted.foreach(println)
       }
       case namespace :: methodName :: _ => {
         val methodType = routesTypes(namespace)(methodName)

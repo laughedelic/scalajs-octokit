@@ -39,20 +39,21 @@ class Octokit(
 object Octokit {
 
   type Headers = js.Dictionary[String]
-  type Json = js.Dynamic
 
   @js.native
   trait Response[Data] extends js.Object {
     /** This is the data you would see in [[https://developer.github.com/v3/]] */
     val data: Data = js.native
+    /** Response status number */
+    val status: Int = js.native
     /** Request metadata */
-    val meta: ResponseMeta = js.native
+    val headers: ResponseHeaders = js.native
   }
 
-  type AnyResponse = Response[Json]
+  type AnyResponse = Response[js.Dynamic]
 
   @js.native
-  trait ResponseMeta extends js.Object {
+  trait ResponseHeaders extends js.Object {
     val `x-ratelimit-limit`: String = js.native
     val `x-ratelimit-remaining`: String = js.native
     val `x-ratelimit-reset`: String = js.native

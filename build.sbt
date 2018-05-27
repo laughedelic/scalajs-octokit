@@ -38,7 +38,7 @@ bintrayPackageLabels := Seq("scalajs", "github", "octokit", "facades")
 
 ghreleaseAssets := Seq()
 
-val octokitV = "15.5.0"
+val octokitV = "15.8.0"
 lazy val downloadRoutesJson = settingKey[File]("Download routes.json file from the octokit/rest.js repository")
 
 downloadRoutesJson := {
